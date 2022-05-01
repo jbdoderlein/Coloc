@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Achats</title>
+</head>
+<body>
+<ul class="achats">
+    {% for achat in achats %}
+        <li class="achat">{{ achat.message }} de {{ achat.montant }}</li>
+    {% endfor %}
+</ul>
+</body>
+</html>
