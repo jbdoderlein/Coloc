@@ -1,9 +1,5 @@
 from datetime import datetime
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
-
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -20,8 +16,8 @@ class Personne(db.Model):
 class Achat(db.Model):
     __tablename__ = 'Achat'
     id = db.Column(db.Integer, primary_key=True)
-    message = db.Column(db.String(120), unique=True)
-    montant = db.Column(db.String(120), unique=True)
+    message = db.Column(db.String(120), unique=False)
+    montant = db.Column(db.Float(120), unique=False)
     date = db.Column(db.DateTime, nullable=False,
                      default=datetime.utcnow)
 
