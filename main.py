@@ -8,7 +8,12 @@ import logging
 from logging import Formatter, FileHandler
 
 from models import db
-from models import Achat
+from models import Achat, Personne
+
+from sqlalchemy import extract
+from sqlalchemy.sql import functions
+
+from datetime import datetime
 
 import os
 
@@ -37,8 +42,34 @@ def home():
 
 @app.route('/achats')
 def achats():
-    achats = Achat.query.all()
-    return render_template('pages/achats.html', achats=achats)
+    #TODO: Envoyer la structure:
+    # Personne:
+    # - liste des achats du mois en cours
+    # - total des montants
+    # - delta
+    # - Total de toutes les dépenses
+
+    total = Achat.query.with_entities(functions.sum(Achat.montant)).filter(extract('month', Achat.date)==datetime.utcnow().month and
+                                                             extract('year', Achat.date)==datetime.utcnow().year
+                                                             ).scalar()
+
+    personnes = Personne.query.all()
+    nb_personnes = len(personnes)
+    data = []
+    for personne in personnes:
+        achats = Achat.query.filter(extract('month', Achat.date)==datetime.utcnow().month and
+                                    extract('year', Achat.date)==datetime.utcnow().year
+                                    ).filter_by(auteur = personne).all()
+        total_personne = Achat.query.with_entities(functions.sum(Achat.montant)).filter(extract('month', Achat.date)==datetime.utcnow().month and
+                                    extract('year', Achat.date)==datetime.utcnow().year
+                                    ).filter_by(auteur = personne).scalar()
+        data.append({"personne": personne,
+                     "achats": achats,
+                     "total": total_personne,
+                     "delta": total_personne - (total/nb_personnes)
+                     })
+
+    return render_template('pages/achats.html', data=data, total=total)
 
 #----------------------------------------------------------------------------#
 # Launch.
