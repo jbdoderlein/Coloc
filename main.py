@@ -10,6 +10,8 @@ from logging import Formatter, FileHandler
 from models import db
 from models import Achat, Personne
 
+from forms import AchatForm
+
 from sqlalchemy import extract
 from sqlalchemy.sql import functions
 
@@ -52,6 +54,8 @@ def achats():
     total = Achat.query.with_entities(functions.sum(Achat.montant)).filter(extract('month', Achat.date)==datetime.utcnow().month and
                                                              extract('year', Achat.date)==datetime.utcnow().year
                                                              ).scalar()
+    if not total:
+        total = 0
 
     personnes = Personne.query.all()
     nb_personnes = len(personnes)
@@ -63,6 +67,8 @@ def achats():
         total_personne = Achat.query.with_entities(functions.sum(Achat.montant)).filter(extract('month', Achat.date)==datetime.utcnow().month and
                                     extract('year', Achat.date)==datetime.utcnow().year
                                     ).filter_by(auteur = personne).scalar()
+        if not total_personne:
+            total_personne = 0
         data.append({"personne": personne,
                      "achats": achats,
                      "total": total_personne,
@@ -70,6 +76,15 @@ def achats():
                      })
 
     return render_template('pages/achats.html', data=data, total=total)
+
+@app.route('/add', methods=['GET', 'POST'])
+def add():
+    form = AchatForm(request.form)
+    if request.method == 'POST' and form.validate():
+        achat = Achat(montant=form.montant.data, message=form.message.data, auteur=form.personne.data)
+        db.session.add(achat)
+        db.session.commit()
+    return render_template('pages/add.html', form=form)
 
 #----------------------------------------------------------------------------#
 # Launch.

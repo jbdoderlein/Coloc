@@ -1,0 +1,23 @@
+.main{
+    margin: 2%;
+}
+
+.ct-label{
+    fill: white!important;
+    color: white!important;
+}
+
+.ct-series-a .ct-area, .ct-series-a .ct-slice-donut-solid, .ct-series-a .ct-slice-pie{
+    fill: #b388ff !important;
+}
+
+.ct-series-b .ct-area, .ct-series-b .ct-slice-donut-solid, .ct-series-b .ct-slice-pie{
+    fill: #ff8f00!important;
+}
+
+.ct-series-c .ct-area, .ct-series-c .ct-slice-donut-solid, .ct-series-c .ct-slice-pie{
+    fill: #80deea!important;
+}
+.ct-series-d .ct-area, .ct-series-d .ct-slice-donut-solid, .ct-series-d .ct-slice-pie{
+    fill: #00c853!important;
+}
