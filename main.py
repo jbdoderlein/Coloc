@@ -22,6 +22,8 @@ def create_app():
     db.init_app(app)
     return app
 
+app = create_app()
+
 
 #----------------------------------------------------------------------------#
 # Controllers.
@@ -44,5 +46,4 @@ def achats():
 
 # Default port:
 if __name__ == '__main__':
-    app = create_app()
     app.run()
