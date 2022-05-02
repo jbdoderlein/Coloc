@@ -12,6 +12,8 @@
 
     <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
     <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
 <div class="container">
@@ -24,8 +26,9 @@
                 {{render_field(form.message, placeholder='Message')}}
                 {{render_field(form.montant, type='number', placeholder='Montant', step='any', min='0')}}
             </dl>
-            <p><input type=submit value=Achat class="waves-effect waves-light btn">
+            <p><input type=submit value="Ajouter l'achat" class="waves-effect waves-light btn-large light-green darken-2">
         </form>
+        <a href="/" class="waves-effect waves-light btn amber darken-2"><i class="material-icons left">arrow_back</i>Retour</a>
     </div>
 </div>
 
