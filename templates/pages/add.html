@@ -16,22 +16,36 @@
 <body>
 <div class="container">
     <div class="center addbox">
+        <h3>Ajouter des achats</h3>
         {% from "pages/_formhelper.html" import render_field %}
         <form method=post>
             <dl>
                 {{form.personne}}
                 {{render_field(form.message, placeholder='Message')}}
-                {{render_field(form.montant)}}
+                {{render_field(form.montant, type='number', placeholder='Montant', step='any', min='0')}}
             </dl>
-            <p><input type=submit value=Achat>
+            <p><input type=submit value=Achat class="waves-effect waves-light btn">
         </form>
     </div>
 </div>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+<a onclick="M.toast({html: '{{message}}'})" class="toaster">Toast!</a>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var elems = document.querySelectorAll('select');
         var instances = M.FormSelect.init(elems, {});
     });
+    for(var i = 0; i < document.querySelectorAll('.toaster').length; i++) {
+        document.querySelectorAll('.toaster')[i].click();
+    }
 </script>
 </body>
 </html>

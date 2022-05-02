@@ -2,7 +2,7 @@
 # Imports
 #----------------------------------------------------------------------------#
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, flash
 
 import logging
 from logging import Formatter, FileHandler
@@ -84,6 +84,7 @@ def add():
         achat = Achat(montant=form.montant.data, message=form.message.data, auteur=form.personne.data)
         db.session.add(achat)
         db.session.commit()
+        flash('Achat effectué avec succès')
     return render_template('pages/add.html', form=form)
 
 #----------------------------------------------------------------------------#

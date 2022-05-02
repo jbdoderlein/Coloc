@@ -21,3 +21,23 @@
 .ct-series-d .ct-area, .ct-series-d .ct-slice-donut-solid, .ct-series-d .ct-slice-pie{
     fill: #00c853!important;
 }
+
+dd{
+    margin-left: 0px;
+}
+
+dt{
+    text-align: left;
+}
+
+.toaster{
+    display: none;
+}
+
+.waves-button-input{
+    color: white;
+}
+
+span{
+    color: black!important;
+}
