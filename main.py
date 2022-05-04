@@ -2,7 +2,7 @@
 # Imports
 #----------------------------------------------------------------------------#
 
-from flask import Flask, render_template, request, flash
+from flask import Flask, render_template, request, flash, redirect
 
 import logging
 from logging import Formatter, FileHandler
@@ -10,7 +10,7 @@ from logging import Formatter, FileHandler
 from models import db
 from models import Achat, Personne
 
-from forms import AchatForm
+from forms import AchatForm, DeleteForm
 
 from sqlalchemy import extract
 from sqlalchemy.sql import functions
@@ -85,7 +85,19 @@ def add():
         db.session.add(achat)
         db.session.commit()
         flash('Achat effectué avec succès')
+        return redirect("achats", code=303)
     return render_template('pages/add.html', form=form)
+
+@app.route('/delete', methods=['GET', 'POST'])
+def delete():
+    form = DeleteForm(request.form)
+    if request.method == 'POST' and form.validate():
+        print("reture")
+        db.session.delete(form.achat.data)
+        db.session.commit()
+        flash('Achat retiré avec succès')
+        return redirect("achats", code=303)
+    return render_template('pages/delete.html', form=form)
 
 #----------------------------------------------------------------------------#
 # Launch.

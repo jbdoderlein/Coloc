@@ -13,6 +13,7 @@
 
     <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
     <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 </head>
 <body>
 <div class="main">
@@ -33,12 +34,12 @@
                 {% for achat in personne.achats %}
                 <tr>
                     <td>{{ achat.message }}</td>
-                    <td>{{ achat.montant }} €</td>
+                    <td>{{ achat.montant|round(3) }} €</td>
                 </tr>
                 {% endfor %}
                 <tr>
                     <td>Total</td>
-                    <td>{{ personne.total }} €</td>
+                    <td>{{ personne.total|round(3) }} €</td>
                 </tr>
                 </tbody>
             </table>
@@ -71,7 +72,7 @@
                 {% endfor %}
                 <tr>
                     <td>Conclusion</td>
-                    <td>{{ total }} €</td>
+                    <td>{{ total|round(3) }} €</td>
                     <td>0 €</td>
                 </tr>
                 </tbody>
@@ -79,6 +80,24 @@
         </div>
     </div>
 </body>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+<a onclick="M.toast({html: '{{message}}'})" class="toaster">Toast!</a>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var elems = document.querySelectorAll('select');
+        var instances = M.FormSelect.init(elems, {});
+    });
+    for(var i = 0; i < document.querySelectorAll('.toaster').length; i++) {
+        document.querySelectorAll('.toaster')[i].click();
+    }
+</script>
 <script>
     var data = {
         series: [
