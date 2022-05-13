@@ -1,0 +1,109 @@
+{% extends 'pages/base.html' %}
+
+{% block title %}Recettes{% endblock %}
+
+{% block content %}
+<div class="container">
+    <input id="search_text" type="text" class="validate">
+
+    <div class="progress" id="progress">
+        <div class="indeterminate"></div>
+    </div>
+
+    <div class="row" id="recettes_list">
+
+    </div>
+
+    <div id="modal_recipe" class="modal">
+        <div class="preloader-wrapper big active" id="recipe_loader">
+            <div class="spinner-layer spinner-blue">
+                <div class="circle-clipper left">
+                    <div class="circle"></div>
+                </div>
+                <div class="gap-patch">
+                    <div class="circle"></div>
+                </div>
+                <div class="circle-clipper right">
+                    <div class="circle"></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-content" id="modal_content">
+            <h4>Test</h4>
+        </div>
+        <div class="modal-footer" id="modal_footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript" charset="utf-8">
+    document.getElementById('progress').style.display = 'none';
+    var socket = io();
+    socket.on('connect', function () {
+        socket.emit('my event', {data: 'I\'m connected!'});
+    });
+
+    // Prevent the page from reloading when pressing enter on search_text
+    document.getElementById('search_text').addEventListener('keydown', function (e) {
+        if (e.keyCode === 13) {
+            socket.emit('get recipes', {data: document.getElementById('search_text').value});
+            document.getElementById('progress').style.display = 'block';
+            e.preventDefault();
+        }
+    });
+
+
+    socket.on('recipes result', function (json) {
+        var recipes = JSON.parse(json);
+        add_recettes(recipes);
+        document.getElementById('progress').style.display = 'none';
+    });
+
+    socket.on('recipe result', function (json) {
+        var recipe = JSON.parse(json);
+        document.getElementById('recipe_loader').style.display = 'block';
+        add_recette(recipe)
+        document.getElementById('recipe_loader').style.display = 'none';
+
+    });
+
+    function add_recette(data) {
+        let recipe = JSON.parse(data);
+        let modal_content = document.getElementById('modal_content');
+        modal_content.innerHTML = '';
+        let title = document.createElement('h4');
+        title.innerHTML = recipe.title;
+        modal_content.appendChild(title);
+        let ingredients = document.createElement('ul');
+        ingredients.innerHTML = '';
+        for (let i = 0; i < recipe.ingredients.length; i++) {
+            let ingredient = document.createElement('li');
+            ingredient.innerHTML = recipe.ingredients[i];
+            ingredients.appendChild(ingredient);
+        }
+        modal_content.appendChild(ingredients);
+    }
+
+
+    function add_recettes(data) {
+        contain = document.getElementById('recettes_list');
+        contain.innerHTML = '';
+        for (var i = 0; i < data.length; i++) {
+            let card = document.createElement('div');
+            let recipe = JSON.parse(data[i]);
+            card.className = 'col s12 m4 l3';
+            card.innerHTML = '<div class="card small"><div class="card-image"><img src="' + recipe.image + '"></div><div class="card-content"><p>' + recipe.title + '</p></div><div class="card-action"><a id="' + recipe.identifier + '" class ="modal-trigger" href="#modal_recipe">Show</a></div></div>';
+            contain.appendChild(card);
+
+            document.getElementById(recipe.identifier).addEventListener('click', function (e) {
+                socket.emit('get recipe', {ident: recipe.identifier});
+            });
+
+        }
+    }
+</script>
+{% endblock %}

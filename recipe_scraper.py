@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
 import sys
-import matplotlib.pyplot as plt
 import json
 import numpy as np
 import urllib
@@ -41,7 +40,7 @@ class Overview:
         self.identifier = identifier
 
     def toJSON(self):
-        return json.dumps({"title": self.title, "image_link": self.image_link, "identifier": self.identifier})
+        return json.dumps({"title": self.title, "image": self.image_link, "identifier": self.identifier})
 
 class RecipeData:
     def __init__(self, title, image_link, ingredients):
@@ -50,7 +49,7 @@ class RecipeData:
         self.ingredients = ingredients
 
     def toJSON(self):
-        return json.dumps({"title": self.title, "image_link": self.image_link, "ingredients": self.ingredients})
+        return json.dumps({"title": self.title, "image": self.image_link, "ingredients": self.ingredients})
 
 def get_recipes(search, max_recipes = 10):
     global known_recipes, index

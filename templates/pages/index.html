@@ -1,25 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/achats.css') }}">
-    <title>Krokol</title>
-    <!-- Compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+{% extends 'pages/base.html' %}
 
-    <!-- Compiled and minified JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+{% block title %}Krocolok{% endblock %}
 
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-</head>
-<body>
+{% block content %}
 <div class="container">
     <div class="center addbox">
-        <h1>Krocoloc</h1>
+        <h1>KrocoloK</h1>
         <a href="/add" class="waves-effect waves-light btn-large amber darken-2"><i class="material-icons left">add</i>Ajouter un achat</a>
         <a href="/achats" class="waves-effect waves-light btn-large amber darken-2"><i class="material-icons left">list</i>Résumé du mois</a>
     </div>
 </div>
-</body>
-</html>
+{% endblock %}

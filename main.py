@@ -3,6 +3,7 @@
 #----------------------------------------------------------------------------#
 
 from flask import Flask, render_template, request, flash, redirect
+from flask_socketio import SocketIO, emit
 
 import logging
 from logging import Formatter, FileHandler
@@ -18,6 +19,9 @@ from sqlalchemy.sql import functions
 from datetime import datetime
 
 import os
+import json
+
+import recipe_scraper
 
 #----------------------------------------------------------------------------#
 # App Config.
@@ -30,6 +34,7 @@ def create_app():
     return app
 
 app = create_app()
+socketio = SocketIO(app)
 
 
 #----------------------------------------------------------------------------#
@@ -99,10 +104,34 @@ def delete():
         return redirect("achats", code=303)
     return render_template('pages/delete.html', form=form)
 
+
+#----------------------------------------------------------------------------#
+# Recettes
+#----------------------------------------------------------------------------#
+
+@app.route('/recettes')
+def recettes():
+    return render_template('pages/recettes.html')
+
+@socketio.on('my event')
+def handle_connect(data):
+    print('received data: ' + str(data))
+
+@socketio.on('get recipes')
+def handle_recipes(data):
+    recettes = recipe_scraper.get_recipes(data['data'], max_recipes=8)
+    print("recettes: ", data['data'])
+    emit('recipes result', json.dumps([overview.toJSON() for overview in recettes]))
+
+@socketio.on('get recipe')
+def handle_recipes(data):
+    recipe = recipe_scraper.get_recipe(identifier=data['ident'])
+    emit('recipe result', json.dumps(recipe.toJSON()))
+
 #----------------------------------------------------------------------------#
 # Launch.
 #----------------------------------------------------------------------------#
 
 # Default port:
 if __name__ == '__main__':
-    app.run()
+    socketio.run(app)
