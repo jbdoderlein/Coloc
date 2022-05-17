@@ -100,7 +100,7 @@ def achats_old(id: int = 1):
         date_from = first_remb.date
         begin_date = f"{first_remb.date.day}/{first_remb.date.month}"
     if not second_remb:
-        date_to = datetime.now()
+        date_to = datetime.utcnow()
         end_date = f"{datetime.utcnow().day}/{datetime.utcnow().month}"
     else:
         date_to = second_remb.date
