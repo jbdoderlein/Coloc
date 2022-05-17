@@ -1,10 +1,10 @@
 {% extends 'pages/base.html' %}
 
-{% block title %}Achats Avril{% endblock %}
+{% block title %}Achats du {{ begin_date }} à {{ end_date }}{% endblock %}
 {% block content %}
 
 <div class="main">
-    <h3 class="center">Achats Avril 2022</h3>
+    <h3 class="center">Achats du {{ begin_date }} à {{ end_date }}</h3>
     <div class="row user-row">
         {% for personne in data %}
         <div class="col s12 m6 l3 user-card">
@@ -66,15 +66,33 @@
             </table>
         </div>
     </div>
+    <div class="row">
+        <div class="input-field col s6 m6 l3">
+            <select id="list-ancien">
+                <option value="" disabled selected>Choose your option</option>
+                {% for id, remb in list_remb %}
+                    <option value="{{ id }}">{{ remb }}</option>
+                {% endfor %}
+            </select>
+            <label>Ancien achats</label>
+        </div>
+        <div class="input-field col s6 m6 l3">
+            <a id="go-ancien" class="waves-effect waves-light btn light-green darken-2">Go</a>
+        </div>
+        <div class="input-field col s6 m6 l3">
+            <a href="/achats/finish" class="waves-effect waves-light btn red darken-2">Terminer la période</a>
+        </div>
+
+    </div>
 </div>
 {% endblock %}
-    
-    {% block scripts %}
+
+{% block scripts %}
 <script>
     var data = {
         series: [
             {% for personne in data %}
-            {{ personne.total|round(3) }},
+                {{ personne.total | round(3)}},
             {% endfor %}
         ]
     };
@@ -85,6 +103,11 @@
         donutSolid: true,
         startAngle: 270,
         showLabel: true
+    });
+
+    document.getElementById('go-ancien').addEventListener('click', function () {
+        var id = document.getElementById('list-ancien').value;
+        window.location.href = '/achats/old/id'.replace('id', id);
     });
 </script>
 {% endblock %}
