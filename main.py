@@ -51,7 +51,7 @@ def home():
 
 @app.route('/achats/finish')
 def finish():
-    r1 = Remboursement(date=datetime.now())
+    r1 = Remboursement()
     db.session.add(r1)
     db.session.commit()
     flash('Remboursement effectué avec succès')
@@ -71,7 +71,7 @@ def achats():
     nb_personnes = len(personnes)
     data = []
     begin_date = f"{previous_repayment.date.day}/{previous_repayment.date.month}"
-    end_date= f"{datetime.now().day}/{datetime.now().month}"
+    end_date= f"{datetime.utcnow().day}/{datetime.utcnow().month}"
     for personne in personnes:
         achats = Achat.query.filter(Achat.date > previous_repayment.date).filter_by(auteur=personne).all()
         total_personne = Achat.query.with_entities(functions.sum(Achat.montant)).filter(
@@ -101,7 +101,7 @@ def achats_old(id: int = 1):
         begin_date = f"{first_remb.date.day}/{first_remb.date.month}"
     if not second_remb:
         date_to = datetime.now()
-        end_date = f"{datetime.now().day}/{datetime.now().month}"
+        end_date = f"{datetime.utcnow().day}/{datetime.utcnow().month}"
     else:
         date_to = second_remb.date
         end_date = f"{second_remb.date.day}/{second_remb.date.month}"
