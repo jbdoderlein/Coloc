@@ -55,7 +55,7 @@ def get_recipes(search, max_recipes = 10):
     global known_recipes, index
     url = "https://www.marmiton.org/recettes/recherche.aspx?"
 
-    keywords = "-".join(search)
+    keywords = "-".join(search.split())
     r = requests.get(url, params = {"aqt" : keywords})
 
     if r.status_code != 200:
@@ -89,7 +89,7 @@ if __name__ == "__main__":
     print(*[get_recipe(overview.identifier).title for overview in ids], sep="\n")
     print("----------")
 
-    idss = get_recipes("coq")
+    idss = get_recipes("tarte aux pommes")
     print(*[overview.title for overview in idss], sep="\n")
     print("----------")
     print(*[get_recipe(overview.identifier).title for overview in idss], sep="\n")
