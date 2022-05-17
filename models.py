@@ -25,5 +25,7 @@ class Achat(db.Model):
     auteur_id = db.Column(db.Integer, db.ForeignKey('Personne.id'), nullable=False)
     auteur = db.relationship('Personne', backref=db.backref('achats', lazy=True))
 
-
-
+class Remboursement(db.Model):
+    __tablename__ = "Remboursement"
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)

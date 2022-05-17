@@ -9,7 +9,7 @@ import logging
 from logging import Formatter, FileHandler
 
 from models import db
-from models import Achat, Personne
+from models import Achat, Personne, Remboursement
 
 from forms import AchatForm, DeleteForm
 
@@ -56,9 +56,10 @@ def achats():
     # - delta
     # - Total de toutes les dépenses
 
-    total = Achat.query.with_entities(functions.sum(Achat.montant)).filter(extract('month', Achat.date)==datetime.utcnow().month and
-                                                             extract('year', Achat.date)==datetime.utcnow().year
-                                                             ).scalar()
+    previous_repayment = Remboursement.query.order_by(Remboursement.date.desc()).first()
+    print(previous_repayment.id)
+
+    total = Achat.query.with_entities(functions.sum(Achat.montant)).filter(Achat.date > previous_repayment.date).scalar()
     if not total:
         total = 0
 
@@ -66,12 +67,8 @@ def achats():
     nb_personnes = len(personnes)
     data = []
     for personne in personnes:
-        achats = Achat.query.filter(extract('month', Achat.date)==datetime.utcnow().month and
-                                    extract('year', Achat.date)==datetime.utcnow().year
-                                    ).filter_by(auteur = personne).all()
-        total_personne = Achat.query.with_entities(functions.sum(Achat.montant)).filter(extract('month', Achat.date)==datetime.utcnow().month and
-                                    extract('year', Achat.date)==datetime.utcnow().year
-                                    ).filter_by(auteur = personne).scalar()
+        achats = Achat.query.filter(Achat.date > previous_repayment.date).filter_by(auteur = personne).all()
+        total_personne = Achat.query.with_entities(functions.sum(Achat.montant)).filter(Achat.date >= previous_repayment.date).filter_by(auteur = personne).scalar()
         if not total_personne:
             total_personne = 0
         data.append({"personne": personne,
@@ -86,7 +83,9 @@ def achats():
 def add():
     form = AchatForm(request.form)
     if request.method == 'POST' and form.validate():
-        achat = Achat(montant=form.montant.data, message=form.message.data, auteur=form.personne.data)
+        achat = Achat(montant=form.montant.data,
+                      message=form.message.data,
+                      auteur=form.personne.data)
         db.session.add(achat)
         db.session.commit()
         flash('Achat effectué avec succès')
