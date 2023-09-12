@@ -21,6 +21,9 @@ class Achat(db.Model):
     montant = db.Column(db.Float(120), unique=False)
     date = db.Column(db.DateTime, nullable=False,
                      default=datetime.utcnow)
+    
+    tag_id = db.Column(db.Integer, db.ForeignKey('Tag.id'), nullable=False, default=1)
+    tag = db.relationship('Tag', backref=db.backref('achats', lazy=True))
 
     auteur_id = db.Column(db.Integer, db.ForeignKey('Personne.id'), nullable=False)
     auteur = db.relationship('Personne', backref=db.backref('achats', lazy=True))
@@ -29,3 +32,8 @@ class Remboursement(db.Model):
     __tablename__ = "Remboursement"
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+class Tag(db.Model):
+    __tablename__ = "Tag"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120), unique=True)
