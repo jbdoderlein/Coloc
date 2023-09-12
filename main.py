@@ -9,9 +9,9 @@ import logging
 from logging import Formatter, FileHandler
 
 from models import db
-from models import Achat, Personne, Remboursement
+from models import Achat, Personne, Remboursement, Tag
 
-from forms import AchatForm, DeleteForm
+from forms import AchatForm, DeleteForm, TagForm
 
 from sqlalchemy import extract
 from sqlalchemy.sql import functions
@@ -145,6 +145,7 @@ def add():
     form = AchatForm(request.form)
     if request.method == 'POST' and form.validate():
         achat = Achat(montant=form.montant.data,
+                      tag=form.tag.data,
                       message=form.message.data,
                       auteur=form.personne.data)
         db.session.add(achat)
@@ -152,6 +153,18 @@ def add():
         flash('Achat effectué avec succès')
         return redirect("achats", code=303)
     return render_template('pages/add.html', form=form)
+
+
+@app.route('/add_tag', methods=['GET', 'POST'])
+def add_tag():
+    form = TagForm(request.form)
+    if request.method == 'POST' and form.validate():
+        tag = Tag(name=form.name.data)
+        db.session.add(tag)
+        db.session.commit()
+        flash('Tag ajouté avec succès')
+        return redirect("achats", code=303)
+    return render_template('pages/add_tag.html', form=form)
 
 
 @app.route('/delete', methods=['GET', 'POST'])
