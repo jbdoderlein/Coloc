@@ -48,6 +48,9 @@ socketio = SocketIO(app)
 def home():
     return render_template('pages/index.html')
 
+@app.route('/crt')
+def crt():
+    db.create_all()
 
 @app.route('/achats/finish')
 def finish():
@@ -196,4 +199,4 @@ def handle_recipes(data):
 
 # Default port:
 if __name__ == '__main__':
-    socketio.run(app)
+    socketio.run(app, allow_unsafe_werkzeug=True)
